@@ -1,14 +1,76 @@
+html{
+  height:100%;
+}
 body {
-  margin: 0;
-  padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color:black;
+  height:100%;
+}
+div#root{
+  height:100%;
+}
+.routerClass{
+  height:100%;
+  position: relative;
+}
+
+@font-face{
+  font-family:'Newfont';
+  src: url(font/03SmartFontUI.ttf);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.nums{
+  font-size:100;
+}
+.words{
+  text-align:center;
+}
+.words{
+}
+
+.kani{
+  font-size:100px;
+  color:#25f72c;
+}
+
+.WordSeeker{
+line-height:175%;
+top: 50%;
+left: 50%;
+-ms-transform: translate(0%,10%);
+-webkit-transform : translate(0%,10%);
+transform : translate(0%,10%);
+}
+.Chat{
+  line-height:350%;
+  text-align:left;
+  font-family:Newfont;
+}
+.chatWords{
+  line-height:350%;
+  margin:25px 0px 0px 0px;
+}
+.InputBoxC{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:100%;
+}
+.InputBox{
+  text-align:center;
+  width: 70%;
+  height: 50%;
+  background: grey;
+  border: double 5px #4ec4d3;
+
+}
+
