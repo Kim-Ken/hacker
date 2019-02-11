@@ -177,28 +177,25 @@ class InputAnswer extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      value:props.value,
-      key:props.keys,
-      password:props.password,
+      password:this.props.password,
       formValue:""
     };
     this.press = this.press.bind(this);
     this.changeForm= this.changeForm.bind(this);
   }
-
   press(){
     console.log(this.state.password===this.state.formValue);
-  }
+  }          
   changeForm(e){
     this.setState({
       formValue:e.target.value
-    })
-  }
+    })       
+  }          
   render(){
     return(
       <div className="InputBox">
         <div className="kani">
-          Input Code
+          Input answer
         </div>
           <input type="text"name="inputbox"className="inputArea" onChange={this.changeForm}/>
           <input type="button" onClick={this.press} value="send data"className="inputButton"/>

@@ -11,82 +11,53 @@ var thisApp;
 var i=0;
 var clock;
 
-function Line(rApp){
-  console.log(thisApp.state.numsRange);
-  i++;
-  thisApp.setState({
-    startPos:i
-  });
-  if(i>thisApp.state.numsRange){
-    console.log("tes");
-    clearInterval(clock);
-    thisApp.setState({
-      randerFinishFlag:true
-    });
-  }
-}
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
 
-
-
 export default class ColorNumber extends Component {
   constructor(props) {
     super(props);
 
-    console.log("color");
     let nums=[]
-    let num=[]
 
-    let numsRange =100;
-    let fontsize =50;
-    let password="password"
+    let numsRange =4;
+    let fontsize =(function(){
+      if(window.innerWidth>window.innerHeight)
+        return window.innerHeight/3-60
+      else
+        return window.innerWidth/3-20
+    }());
+    let password=""
+    thisApp=this;
 
     let setedHeightNums =[];
     let setedWidthNums =[];
 
-    var numsWidth = window.innerWidth/fontsize*1.5;
-    var numsHeight = window.innerHeight/fontsize;
+    var numsWidth = 4;
+    var numsHeight = 4;
+    var puzzles=[[0,1],
+      [0,3],
+      [1,2],
+      [1,4],
+      [4,5],
+      [3,4],
+      [6,7],
+      [7,8],
+      [5,8]]
 
-
-    for(var j=0;j<password.length;j++){
-      setedHeightNums.push(getRandomInt(numsRange));     
-      setedWidthNums.push(getRandomInt(numsWidth));
+    for(var i=0;i<9;i++){
+      nums.push(getRandomInt(0))
     }
+
 
     setedHeightNums.sort(function(a,b){
         if( a < b ) return -1;
         if( a > b ) return 1;
         return 0;
     })
-    console.log(setedHeightNums);
-
-    for(var i=0;i<numsRange;i++){
-      for(var t=0;t<numsWidth;t++){
-        for(var j=0;j<password.length;j++){
-          if(i===setedHeightNums[j]&&t===setedWidthNums[j]){
-            num.push(password[j]);
-            continue;
-          }
-        }
-
-      var n =getRandomInt(6);
-      if(n%2===1){
-        n=1;
-        n=String(n);
-      }
-      else if(n%2===0){
-        n=0;
-        n=String(n);
-      }
-      num.push(n);
-    }
-    nums.push(num);
-    num=[];
-  }
 
 
 
@@ -101,37 +72,27 @@ export default class ColorNumber extends Component {
       numsHeight:numsHeight,
       numsWidth:numsWidth,
       pushedFlag:false,
+      winFlag:false,
       randerFinishFlag:false,
+      puzzles:puzzles
     };
     this.start = this.start.bind(this);
-    thisApp=this;
   }
 
+  line(){
+  }
 
   start(){
-    if(this.state.pushedFlag===true){
-      return;
-    }
-    this.setState({
-      pushedFlag:true
-    });
     //var i=0;
-    clock = setInterval(function(){ Line(this)},50);
+    this.line();
   }
 
   render() {
 
     var renderHtml = [];
 
-    var index =this.state.numsHeight+this.state.startPos;
-    if(index>100){
-      index=100;
-    }
-    for(var i=this.state.startPos;i<index;i++){
-      renderHtml.push(<Nums key={i} value={this.state.nums[i]} fontsize={this.state.fontsize}/>);
-    }
-    if(this.state.randerFinishFlag===true){
-      return(<InputAnswer password={this.state.password}/>)
+    for(var i=0;i<3;i++){
+      renderHtml.push(<Nums key={i} value={i} fontsize={this.state.fontsize}/>);
     }
     return (<div className="WordSeeker" onClick={this.start}>
       {renderHtml}
@@ -175,6 +136,7 @@ class InputAnswer extends Component{
   }
 }
 
+
 class Nums extends Component{
   constructor(props) {
     super(props);
@@ -187,9 +149,8 @@ class Nums extends Component{
 
   render(){
     var renderHtml = [];
-    let i=0;
-    for(const v of this.state.value){
-      renderHtml.push(<Num key={i++} value={v} fontsize={this.state.fontsize}/>);
+    for(var i=0;i<3;i++){
+      renderHtml.push(<Num key={i} value={this.state.value*3+i} fontsize={this.state.fontsize}/>);
     }
 
     return(<div className="words">
@@ -201,28 +162,96 @@ class Num extends Component{
   constructor(props){
     super(props);
     this.state = {
-      word:props.value,
+      index:props.value,
+      value:thisApp.state.nums[props.value],
       key:props.keys,
-      fontsize:props.fontsize
+      fontsize:props.fontsize,
     };
+    this.click = this.click.bind(this);
+  }
+
+  click(){
+    let nums=thisApp.state.nums
+    let pu=[];
+    for(let v of thisApp.state.puzzles){
+      for(let h of v){
+        if(h===this.state.index){
+          pu.push(v)
+        }
+      }
+    }
+    var a=[]
+    for(let p of pu){
+      for(let h of p)
+        a.push(h)
+    }
+    var b = a.filter(function (x, i, self) {
+            return self.indexOf(x) === i;
+        });
+    for(let j of b){
+        if(nums[j]>=1)
+          nums[j]=-1
+        nums[j]=++nums[j]
+    }
+    let winFlag=true
+    for(let v of nums){
+      if(v===0)
+        winFlag=false
+    }
+    console.log(winFlag)
+    thisApp.setState({
+      winFlag:winFlag,
+      nums:nums
+    })
   }
 
   render(){
-    let wordColor="#25f72c";
+    let wordColor="red";
     let wordClass="Num";
-    if(!(this.state.word==="1"||this.state.word==="0")){
-      wordColor="red";
-      wordClass="AnswerNum";
+    //if(!(this.state.word==="1"||this.state.word==="0")){
+      //wordColor="red";
+      //wordClass="AnswerNum";
+    //}
+    let ass =thisApp.state.nums[this.state.index]
+    let r=255
+    let g=255
+    let b=255
+    let styleMode
+    if(ass===1){
+      g=250
+      b=100
+      r=100
+      styleMode="NumBox"
+    }
+    else{
+      g=50
+      b=50
+      r=240
+      styleMode="NumRedBox"
     }
     let styles={
       fontSize:this.state.fontsize,
-      color:wordColor
+      background:`rgb(${[r,g,b]})`,
+      width:this.state.fontsize,
+      height:this.state.fontsize,
+      display:"inline-block",
+      border:"solid",
+      borderColor:"black",
+      position:"relavie",
+      textAlign:"center",
+      margin:"auto",
+      color:"green"
+    }
+    let aStyle={
+      position:"absolute",
+      width:this.state.fontsize*4,
+      height:this.state.fontsize*4,
     }
     return(
-      <span className={wordClass} style={styles}>
-      {this.state.word}
-      </span>
+      <div className={styleMode} onClick={this.click}style={styles}>
+      </div>
     )
+      //{thisApp.state.nums[this.state.index]}
   }
 }
 

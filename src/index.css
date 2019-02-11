@@ -68,9 +68,8 @@ transform : translate(0%,10%);
 .InputBox{
   text-align:center;
   width: 70%;
-  height: 50%;
+  height: 70%;
   background: grey;
   border: double 5px #4ec4d3;
-
 }
 
